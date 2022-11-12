@@ -1,3 +1,8 @@
-# Timestamp Microservice
+# KingGoku90 - Microservice Projects for FCC
 
-This is the boilerplate code for the Timestamp Microservice project. Instructions for building your project can be found at https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/timestamp-microservice
+### Description:
+
+This is a portfolio application which displays the KingGoku90's API's and Microservices work
+as part of the freeCodeCamp.org curriculum.
+
+Other pages will be added in the near future to complete this app as a portfolio prject.

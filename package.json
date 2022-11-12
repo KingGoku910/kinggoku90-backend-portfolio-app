@@ -1,28 +1,37 @@
 {
-  "name": "fcc-api-projects-boilerplate",
+  "name": "kinggoku90-backend-portfolio-app",
   "version": "0.0.1",
-  "description": "An FCC Backend Challenge",
+  "description": "The KingGoku90 Backend Challenge Web App",
+  "author": "KingGoku90",
+  "engines": {
+    "node": "18.x"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.12.4",
-    "cors": "^2.8.0"
+    "cors": "^2.8.5",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "got": "^11.8.5",
+    "tape": "^4.16.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/freeCodeCamp/boilerplate-project-timestamp.git"
+    "url": "https://github.com/KingGoku910/kinggoku90-backend-portfolio-app.git"
   },
-  "bugs": {
-    "url": "https://github.com/freeCodeCamp/freeCodeCamp/issues"
-  },
-  "homepage": "https://github.com/freeCodeCamp/boilerplate-project-timestamp#readme",
-  "author": "freeCodeCamp <team@freecodecamp.org>",
   "keywords": [
     "node",
+    "heroku",
+    "hyperdev",
     "express",
-    "freeCodeCamp"
+    "freeCodeCamp",
+    "Web Developer",
+    "Front End Developer",
+    "Back End Developer"
   ],
   "license": "MIT"
 }
