@@ -26,10 +26,12 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get
+app.get("/timestamp", (req, res) => {
+    res.sendFile(__dirname + '/views/timestamp.html');
+});
 
 // Timestamp Project
-app.get("/api/timestamp", function (req, res) {
+app.get("/api/timestamp", (req, res) => {
     var now = new Date()
     res.json({
         "unix": now.getTime(),
@@ -37,7 +39,7 @@ app.get("/api/timestamp", function (req, res) {
     });
 });
 
-app.get("/api/timestamp/:date_string", function (req, res) {
+app.get("/api/timestamp/:date_string", (req, res) => {
     let dateString = req.params.date_string;
 
     if (parseInt(dateString) > 10000) {
