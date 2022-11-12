@@ -40,6 +40,12 @@ app.get("/requestHeaderParser", (req, res) => {
     res.sendFile(__dirname + '/views/requestHeaderParser.html');
 });
 
+//Request Header parser router
+
+app.get("/urlShortner", (req, res) => {
+    res.sendFile(__dirname + '/views/urlShortner.html');
+});
+
 // Timestamp Project
 app.get("/api/timestamp", (req, res) => {
     var now = new Date()
