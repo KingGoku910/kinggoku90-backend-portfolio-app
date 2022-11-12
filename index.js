@@ -95,6 +95,14 @@ app.get("/api/whoami", (req, res) => {
      })
 });
 
+//URL Shortner
+
+app.get("/api/urlShortner", (req, res) => {
+    req.json({
+        
+
+    })
+})
 
 // listen for requests :)
 var listener = app.listen(port, function () {
