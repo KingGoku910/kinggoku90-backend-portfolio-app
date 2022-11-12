@@ -83,7 +83,7 @@ app.get("/api/timestamp/:date_string", (req, res) => {
 app.get("/api/whoami", (req, res) => {
 
     res.json({
-        "ip": req.connection.remoteAddress,
+        "ipaddress": req.connection.remoteAddress,
         "language": req.headers["accept-language"],
         "software": req.headers["user-agent"]
      })
