@@ -26,8 +26,17 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+
+//Timestamp HTML router
+
 app.get("/timestamp", (req, res) => {
     res.sendFile(__dirname + '/views/timestamp.html');
+});
+
+//Request Header parser router
+
+app.get("/requestHeaderParser", (req, res) => {
+    res.sendFile(__dirname + '/views/requestHeaderParser.html');
 });
 
 // Timestamp Project
@@ -39,8 +48,12 @@ app.get("/api/timestamp", (req, res) => {
     });
 });
 
+
+
 app.get("/api/timestamp/:date_string", (req, res) => {
     let dateString = req.params.date_string;
+
+
 
     if (parseInt(dateString) > 10000) {
         let unixTime = new Date(parseInt(dateString));
