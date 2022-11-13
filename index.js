@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var shortId = require('shortid');
 const app = express();
 const port = process.env.PORT || 3000;
-require('dotenv').config()
+require('dotenv').config();
 
 
 
