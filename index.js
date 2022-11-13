@@ -15,7 +15,12 @@ require('dotenv').config()
 
 
 //Setup DB
-mongoose.connect(process.env.DB_URI)
+//mongoose.connect(process.env.DB_URI)
+
+mongoose.connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
