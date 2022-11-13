@@ -7,7 +7,6 @@ const express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var shortId = require('shortid');
 const app = express();
 const port = process.env.PORT || 3000;
 var dns = require('dns');
@@ -24,11 +23,15 @@ mongoose.connect(process.env.DB_URI, {
     useUnifiedTopology: true
 });
 
+//middle-ware
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
-const shortid = require('shortid');
+//const shortid = require('shortid');
+const { json } = require('express');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -114,60 +117,50 @@ app.get("/api/whoami", (req, res) => {
 });
 
 //URL Shortner
-// Build a schema and model to store saved URLS
-var ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
-    short_url: String,
-    original_url: String,
-    suffix: String
-}));
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-// parse application/json
-app.use(bodyParser.json())
+const originalUrls = [];
+const shortUrls = [];
 
-app.post("/api/shorturl/new/", (req, res) => {
-    let client_requested_url = req.body.url
+app.post("/api/shorturl/new", (req, res) => {
+    const url = req.body.url
+    const foundIndex = originalUrls.indexOf(url);
 
-    let suffix = shortid.generate();
-    let newShortURL = suffix
+    if (!url.includes("https://") && !url.includes("http://")) {
+    return res.json({ error: "Invalid url" })
+}
 
-    let newURL = new ShortURL({
-        short_url: __dirname + "/api/shorturl/" + suffix,
-        original_url: client_requested_url,
-        suffix: suffix
-    })
+    if (foundIndex < 0) {
+        originalUrls.push(url)
+        shortUrls.push(shortUrls.length)
 
-    newURL.save((err, doc) => {
-        if (err) return console.error(err);
-        res.json({
-            "saved": true,
-            "short_url": newURL.short_url,
-            "orignal_url": newURL.original_url,
-            "suffix": newURL.suffix
+        return res.json({
+            original_url: url,
+            short_url: shortUrls.length - 1
         });
-    });
+    };
+
+    return res.json({
+        original_url: url,
+        short_url: shortUrls[foundIndex]
+    }); 
 });
 
-app.get("/api/shorturl/:suffix", (req, res) => {
-    let userGeneratedSuffix = req.params.suffix;
-    ShortURL.find({ suffix: userGeneratedSuffix }).then(foundUrls => {
-        let urlForRedirect = foundUrls[0];
-        res.redirect(urlForRedirect.original_url);
-    });
+app.get("/api/shorturl/:shorturl", (req, res) => {
+    const shorturl = parseInt(req.params.shorturl)
+    const foundIndex = shortUrls.indexOf(shorturl);
+
+    if (foundIndex < 0) {
+        return res.json({
+            "error": "No short URL found for the given input"
+        });
+    }
+    res.redirect(originalUrls[foundIndex])
 });
-
-app.get("/api/shorturl/:suffix", (req, res) => {
-    let userSuffix = req.params.suffix;
-    ShortURL.find({ suffix: userSuffix }).then((foundUrls) => {
-        let urlForRedirect = foundUrls[0];
-        res.redirect(urlForRedirect.original_url);
-        
-    });
-});
+    
 
 
 
-// listen for requests :)
+    //dns.lookup(host, cb)
+    // listen for requests :)
 var listener = app.listen(port, () => {
-  console.log('Your app is listening on port ' + listener.address().port);
+    console.log('Your app is listening on port' + listener.address().port)
 });
