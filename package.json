@@ -4,7 +4,7 @@
   "description": "The KingGoku90 Backend Challenge Web App",
   "author": "KingGoku90",
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
   },
   "main": "index.js",
   "scripts": {
