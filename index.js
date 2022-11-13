@@ -10,7 +10,9 @@ var bodyParser = require('body-parser');
 var shortId = require('shortid');
 const app = express();
 const port = process.env.PORT || 3000;
+var dns = require('dns');
 require('dotenv').config();
+
 
 
 
@@ -112,41 +114,45 @@ app.get("/api/whoami", (req, res) => {
 });
 
 //URL Shortner
-//build schema & model to store urls
-
+// Build a schema and model to store saved URLS
 var ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
+    short_url: String,
     original_url: String,
-    suffix: String,
-    short_url: String
+    suffix: String
 }));
-
-//parse app/x-www-form-urlencoded
+// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
-
+// parse application/json
 app.use(bodyParser.json())
 
-//Create app json parser 
-var jsonParser = bodyParser.json()
-
 app.post("/api/shorturl/new/", (req, res) => {
-    let requestedUrl = req.body.url
+    let client_requested_url = req.body.url
+
     let suffix = shortid.generate();
-    let newShortUrl = suffix;
+    let newShortURL = suffix
 
     let newURL = new ShortURL({
-        original_url: requestedUrl,
-        suffix: suffix,
-        short_url: __dirname + "/api/shorturl/" + suffix
+        short_url: __dirname + "/api/shorturl/" + suffix,
+        original_url: client_requested_url,
+        suffix: suffix
     })
 
     newURL.save((err, doc) => {
-        if (err) return console.log(err);
+        if (err) return console.error(err);
         res.json({
             "saved": true,
-            "original_url": newURL.original_url,
-            "suffix": newURL.suffix,
-            "short_url": newURL.short_url
+            "short_url": newURL.short_url,
+            "orignal_url": newURL.original_url,
+            "suffix": newURL.suffix
         });
+    });
+});
+
+app.get("/api/shorturl/:suffix", (req, res) => {
+    let userGeneratedSuffix = req.params.suffix;
+    ShortURL.find({ suffix: userGeneratedSuffix }).then(foundUrls => {
+        let urlForRedirect = foundUrls[0];
+        res.redirect(urlForRedirect.original_url);
     });
 });
 
