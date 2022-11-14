@@ -3,14 +3,14 @@
 
 
 // init project
+require('dotenv').config();
 const express = require('express');
-var mongo = require('mongodb');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const dns = require("dns");
+const urlparser = require("url");
 const app = express();
 const port = process.env.PORT || 3000;
-var dns = require('dns');
-require('dotenv').config();
 
 
 
@@ -117,49 +117,41 @@ app.get("/api/whoami", (req, res) => {
 });
 
 //URL Shortner
-const originalUrls = [];
-const shortUrls = [];
+const schema = new mongoose.Schema({ url: 'string' });
+const Url = mongoose.model('Url', schema);
 
-app.post("/api/shorturl/new", (req, res) => {
-    const url = req.body.url
-    const foundIndex = originalUrls.indexOf(url);
+app.post('/api/shorturl/new', (req, res) => {
+    const bodyurl = req.body.url;
 
-    if (!url.includes("https://") && !url.includes("http://")) {
-    return res.json({ error: "Invalid url" })
-}
-
-    if (foundIndex < 0) {
-        originalUrls.push(url)
-        shortUrls.push(shortUrls.length)
-
-        return res.json({
-            original_url: url,
-            short_url: shortUrls.length - 1
-        });
-    };
-
-    return res.json({
-        original_url: url,
-        short_url: shortUrls[foundIndex]
-    }); 
+    const something = dns.lookup(urlparser.parse(bodyurl).hostname, (err, address) => {
+        if (!address) {
+            res.json({ error: "Invalid URL" })
+        } else {
+            const url = new Url({ url: bodyurl })
+            url.save((err, data) => {
+                res.json({
+                    original_url: data.url,
+                    short_url: data.id
+                })
+            })
+        }
+    })
 });
 
-app.get("/api/shorturl/:shorturl", (req, res) => {
-    const shorturl = parseInt(req.params.shorturl)
-    const foundIndex = shortUrls.indexOf(shorturl);
+app.get("/api/shorturl/new/:id", (req, res) => {
+    const id = req.params.id;
+    Url.findById(id, (err, data) => {
+        if (!data) {
+            res.json({ error: "Invalid URL" })
+        } else {
 
-    if (foundIndex < 0) {
-        return res.json({
-            "error": "No short URL found for the given input"
-        });
-    }
-    res.redirect(originalUrls[foundIndex])
+            res.redirect(data.url)
+        }
+    })
 });
     
 
-
-
-    //dns.lookup(host, cb)
+   
     // listen for requests :)
 var listener = app.listen(port, () => {
     console.log('Your app is listening on port' + listener.address().port)
