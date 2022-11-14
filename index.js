@@ -120,7 +120,7 @@ app.get("/api/whoami", (req, res) => {
 const schema = new mongoose.Schema({ url: 'string' });
 const Url = mongoose.model('Url', schema);
 
-app.post('/api/shorturl/new', (req, res) => {
+app.post('/api/shorturl/', (req, res) => {
     const bodyurl = req.body.url;
 
     const something = dns.lookup(urlparser.parse(bodyurl).hostname, (err, address) => {
@@ -138,7 +138,7 @@ app.post('/api/shorturl/new', (req, res) => {
     })
 });
 
-app.get("/api/shorturl/new/:id", (req, res) => {
+app.get("/api/shorturl/:id", (req, res) => {
     const id = req.params.id;
     Url.findById(id, (err, data) => {
         if (!data) {
